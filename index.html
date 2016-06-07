@@ -18,6 +18,10 @@
   <body>
     <div id="map"></div>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script 
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDH08yE2_pwj89i0Hxn2C7g5h42k4QBSL4">
+</script>
+<script src="richmarker.js" type="text/javascript"></script>
 
 <script>
   var styles = [
@@ -62,23 +66,25 @@
     var json='newFeeds.json'
     var buses;
     var locations= [
-          ['401',0,0],
-          ['402',0,0],
-          ['404',0,0],
-          ['408',0,0],
-          ['432',0,0],
-          ['436',0,0],
-          ['438',0,0],
-          ['443', 0,0],
-          ['749', 0,0],
-          ['900', 0,0],
+          ['401',0,0,'T'],
+          ['402',0,0,''],
+          ['404',0,0,'T'],
+          ['408',0,0,'T'],
+          ['432',0,0,'G'],
+          ['436',0,0,'G'],
+          ['438',0,0,''],
+          ['439',0,0,'B'],
+          ['443', 0,0,'R'],
+          ['749', 0,0,'N'],
+          ['900', 0,0,'E'],
 
         ];
         var marker=[], i;    
         for (i = 0; i < locations.length; i++) { 
           marker[locations[i][0]] = new google.maps.Marker({
             position: new google.maps.LatLng(locations[i][1], locations[i][2]),
-            map: map
+            label:locations[i][3],
+            map: map,
           });
         }
       $.getJSON(json, function(data){
@@ -90,27 +96,24 @@
           buses = data;
       });
       var arr = $.map(buses, function(el) { return el });
-      for (var i = 0; i < arr.length; i++) {
+      for (var i = 0; i < arr.length-1; i++) {
         var lat=parseFloat(arr[i]['lat']);
         var lon=parseFloat(arr[i]['lon']);
         var num=arr[i]['number']
-        moveMarker( map, marker[num],lat,lon );
+        console.log(i)
         console.log(num,lat,lon)
+        moveMarker( map, marker[num],lat,lon );
       }
-
-
     },1000);
   }
 
   function moveMarker( map, marker,lat,lon ) {
-    
-    //delayed so you can see it move
         marker.setPosition( new google.maps.LatLng( lon, lat ) );
   };
 
+google.maps.event.addDomListener(window, 'load', initMap);
 </script>
-<script async defer
-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDH08yE2_pwj89i0Hxn2C7g5h42k4QBSL4 &callback=initMap">
-</script>
+
+
 </body>
 </html>
