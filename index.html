@@ -41,8 +41,12 @@ function initMap() {
         mapTypeIds: [google.maps.MapTypeId.ROADMAP, 'map_style']
       }
   };
+
+  var myLatLng = new google.maps.LatLng( 33.78, -84.39 )
+
   var map = new google.maps.Map(document.getElementById('map'),
-    mapOptions);
+    mapOptions),marker = new google.maps.Marker( {position: myLatLng, map: map} );
+;
 
   map.mapTypes.set('map_style', styledMap);
   map.setMapTypeId('map_style');
@@ -57,7 +61,22 @@ function initMap() {
       strokeOpacity: 0.5
       };
   });
+
+
+    
+    marker.setMap( map );
+    moveMarker( map, marker );
+
 }
+
+function moveMarker( map, marker ) {
+    
+    //delayed so you can see it move
+    setTimeout( function(){ 
+        marker.setPosition( new google.maps.LatLng( 33.78, -84.38 ) );
+      }, 1500 );
+
+};
 
     </script>
     <script async defer
