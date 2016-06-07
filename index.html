@@ -21,60 +21,43 @@
     <script>
 
   var styles = [
-    {
-      stylers: [
-        { saturation: -20 }
-      ]
-    },{
+  {
       featureType: "road",
       elementType: "geometry",
       stylers: [
         { lightness: 100 },
       ]
-    },{
-      featureType: "road",
-      elementType: "labels",
-      stylers: [
-      ]
     }
   ];
 
-
-
-
-      var map;
-      function initMap() {
-        var styledMap = new google.maps.StyledMapType(styles,
-          {name: "Styled Map"});
-
-          var mapOptions = {
-          zoom: 15,
-          center: {lat: 33.78, lng: -84.39},
-    mapTypeControlOptions: {
-      mapTypeIds: [google.maps.MapTypeId.ROADMAP, 'map_style']
-    }
+  var map;
+function initMap() {
+    var styledMap = new google.maps.StyledMapType(styles,
+      {name: "Styled Map"});
+      var mapOptions = {
+      zoom: 15,
+      center: {lat: 33.78, lng: -84.39},
+      mapTypeControlOptions: {
+        mapTypeIds: [google.maps.MapTypeId.ROADMAP, 'map_style']
+      }
   };
   var map = new google.maps.Map(document.getElementById('map'),
     mapOptions);
 
-  //Associate the styled map with the MapTypeId and set it to display.
   map.mapTypes.set('map_style', styledMap);
   map.setMapTypeId('map_style');
 
-        // NOTE: This uses cross-domain XHR, and may not work on older browsers.
-        map.data.loadGeoJson('geojson/gt_routes.geojson');
-        map.data.setStyle(function(feature) {
-        var color = feature.getProperty('routeColor');
-        return {
-          strokeColor: '#'+color,
-          strokeWeight: 3,
-          strokeOpacity: 0.5
+  map.data.loadGeoJson('geojson/gt_routes.geojson');
 
-          };
-        });
-
-
-      }
+  map.data.setStyle(function(feature) {
+  var color = feature.getProperty('routeColor');
+  return {
+      strokeColor: '#'+color,
+      strokeWeight: 3,
+      strokeOpacity: 0.5
+      };
+  });
+}
 
     </script>
     <script async defer
