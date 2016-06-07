@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Data Layer: Simple</title>
+    <title>GaTech Buses</title>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
     <style>
@@ -17,9 +17,9 @@
   </head>
   <body>
     <div id="map"></div>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 
-    <script>
-
+<script>
   var styles = [
   {
       featureType: "road",
@@ -29,58 +29,88 @@
       ]
     }
   ];
-
   var map;
-function initMap() {
-    var styledMap = new google.maps.StyledMapType(styles,
-      {name: "Styled Map"});
-      var mapOptions = {
-      zoom: 15,
-      center: {lat: 33.78, lng: -84.39},
-      mapTypeControlOptions: {
-        mapTypeIds: [google.maps.MapTypeId.ROADMAP, 'map_style']
+
+  function initMap() {
+      var styledMap = new google.maps.StyledMapType(styles,
+        {name: "Styled Map"});
+        var mapOptions = {
+        zoom: 15,
+        center: {lat: 33.78, lng: -84.39},
+        mapTypeControlOptions: {
+          mapTypeIds: [google.maps.MapTypeId.ROADMAP, 'map_style']
+        }
+    };
+
+    var map = new google.maps.Map(document.getElementById('map'),
+      mapOptions)
+
+    map.mapTypes.set('map_style', styledMap);
+    map.setMapTypeId('map_style');
+
+    map.data.loadGeoJson('geojson/gt_routes.geojson');
+
+    map.data.setStyle(function(feature) {
+    var color = feature.getProperty('routeColor');
+    return {
+        strokeColor: '#'+color,
+        strokeWeight: 3,
+        strokeOpacity: 0.5
+        };
+    });
+
+    var json='newFeeds.json'
+    var buses;
+    var locations= [
+          ['401',0,0],
+          ['402',0,0],
+          ['404',0,0],
+          ['408',0,0],
+          ['432',0,0],
+          ['436',0,0],
+          ['438',0,0],
+          ['443', 0,0],
+          ['749', 0,0],
+          ['900', 0,0],
+
+        ];
+        var marker=[], i;    
+        for (i = 0; i < locations.length; i++) { 
+          marker[locations[i][0]] = new google.maps.Marker({
+            position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+            map: map
+          });
+        }
+      $.getJSON(json, function(data){
+          buses = data;
+      });
+
+    setInterval(function() {
+      $.getJSON(json, function(data){
+          buses = data;
+      });
+      var arr = $.map(buses, function(el) { return el });
+      for (var i = 0; i < arr.length; i++) {
+        var lat=parseFloat(arr[i]['lat']);
+        var lon=parseFloat(arr[i]['lon']);
+        var num=arr[i]['number']
+        moveMarker( map, marker[num],lat,lon );
+        console.log(num,lat,lon)
       }
-  };
-
-  var myLatLng = new google.maps.LatLng( 33.78, -84.39 )
-
-  var map = new google.maps.Map(document.getElementById('map'),
-    mapOptions),marker = new google.maps.Marker( {position: myLatLng, map: map} );
-;
-
-  map.mapTypes.set('map_style', styledMap);
-  map.setMapTypeId('map_style');
-
-  map.data.loadGeoJson('geojson/gt_routes.geojson');
-
-  map.data.setStyle(function(feature) {
-  var color = feature.getProperty('routeColor');
-  return {
-      strokeColor: '#'+color,
-      strokeWeight: 3,
-      strokeOpacity: 0.5
-      };
-  });
 
 
-    
-    marker.setMap( map );
-    moveMarker( map, marker );
+    },1000);
+  }
 
-}
-
-function moveMarker( map, marker ) {
+  function moveMarker( map, marker,lat,lon ) {
     
     //delayed so you can see it move
-    setTimeout( function(){ 
-        marker.setPosition( new google.maps.LatLng( 33.78, -84.38 ) );
-      }, 1500 );
+        marker.setPosition( new google.maps.LatLng( lon, lat ) );
+  };
 
-};
-
-    </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDH08yE2_pwj89i0Hxn2C7g5h42k4QBSL4 &callback=initMap">
-    </script>
-  </body>
+</script>
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDH08yE2_pwj89i0Hxn2C7g5h42k4QBSL4 &callback=initMap">
+</script>
+</body>
 </html>

@@ -37,7 +37,7 @@ def recvall(sock):
 	        	print 'partal feed'
             	part_s=part_s+part
         except ValueError:
-            print "Oops!  That was not a valid number.  Try again..."
+            print "Oops! "
 
 recvall(sock)
 conn.close()
